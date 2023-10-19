@@ -1,0 +1,1492 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "Legends Re:Written Raid", HidePremium = false, SaveConfig = false, ConfigFolder = "asdsahgjasdhkgjbdsa"})
+
+-------------------------------------------------  Star Players  -------------------------------------------------
+--------
+------
+-----
+----
+---
+--
+---------------------------------------------------------------------------------------------------------------------
+local Tab1 = Window:MakeTab({
+	Name = "Player",
+	Icon = "rbxassetid://12836323838",
+	PremiumOnly = false
+})
+-------------------------------------------
+local Tab2 = Window:MakeTab({
+	Name = "Raid Lv.50",
+	Icon = "rbxassetid://12836287616",
+	PremiumOnly = false
+})
+-------------------------------------------
+local Tab3 = Window:MakeTab({
+	Name = "Raid Lv.60",
+	Icon = "rbxassetid://12836287616",
+	PremiumOnly = false
+})
+-------------------------------------------
+local Tab4 = Window:MakeTab({
+	Name = "Magic",
+	Icon = "rbxassetid://12836287616",
+	PremiumOnly = false
+})
+------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+InfJump = false
+Tab1:AddToggle({
+    Name = "InfJump",
+    Default = false,
+    Callback = function(value)
+        InfJump = value
+    end
+})
+
+local function onJumpRequest()
+    if InfJump then
+        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end
+end
+
+game:GetService("UserInputService").JumpRequest:connect(onJumpRequest)
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+local Speed1 = 100
+
+Tab1:AddButton({
+    Name = "Speed 100",
+    Callback = function(value)
+        if Speed1 then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Speed1
+        end
+    end
+})
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+local Speed = 0
+Tab1:AddTextbox({
+    Name = "Speed Edit",
+    Default = "      ",
+    TextDisappear = true,
+    Callback = function(value)
+        local amount = tonumber(value)
+        if amount and amount > 0 then
+            Speed = amount
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Speed
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+local RuneArrows = true
+Tab1:AddTextbox({
+    Name = "RuneArrows",
+    Default = "      ",
+    TextDisappear = true,
+    Callback = function(value)
+        local amount = tonumber(value)
+        if amount and amount > 0 and RuneArrows then
+            local ohString1 = "RuneArrows"
+            local ohString2 = "Bows"
+            local ohNumber3 = amount
+            game:GetService("ReplicatedStorage").Remotes.BuyItem:FireServer(ohString1, ohString2, ohNumber3)
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+AntiAFK = false
+
+Tab1:AddToggle({
+    Name = "Anti AFK",
+    Default = false,
+        Callback = function(value)
+        AntiAFK = value
+        if AntiAFK then
+            wait(3)
+            local VirtualUser=game:service'VirtualUser'
+            game:service('Players').LocalPlayer.Idled:connect(function()
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton2(Vector2.new())
+            end)
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+local Section = Tab1:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+
+local Rejoin = true
+Tab1:AddButton({
+    Name = "Rejoin Raid",
+    Callback = function(value)
+        if Rejoin then
+        local tpservice= game:GetService("TeleportService")
+        local plr = game.Players.LocalPlayer
+        tpservice:Teleport(game.PlaceId, plr)
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+--local TweenService
+local TweenService = game:GetService("TweenService")
+local TweenInfoClose = TweenInfo.new(0.5, Enum.EasingStyle.Linear)
+local Character = game.Players.LocalPlayer.Character
+
+
+--local Players
+local Players = game:GetService("Players")
+local player = game:GetService("Players").LocalPlayer
+local char = Players.LocalPlayer.Character
+local HumanoidRootPart = Character.HumanoidRootPart
+
+--local WSH
+local Workspace = game:GetService("Workspace")
+
+------------------------------------------------------------------------------------------------------------------------------------
+--
+---
+----
+-----
+------
+-------
+--------
+-------------------------------------------------  End Players  --------------------------------------------------
+
+
+-------------------------------------------------  Star Rais Lv.50-------------------------------------------------
+--------
+------
+-----
+----
+---
+--
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab2:AddSection({
+	Name = "Bow Farm All Lv.50"
+})
+local Section = Tab2:AddSection({
+	Name = "If using Save HP, open infJume"
+})
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---Save HP Gigy
+local MonZK50 = {"Lahmu","MysticIllusionist","DesertSnake","Enkidu","Gilgamesh"}
+
+local Mon = true
+local BowTT = true
+
+local function MonsterZK50()
+    local closestDist = math.huge
+    local MobBow = nil
+    for i,v in pairs(game.workspace.Mobs:GetChildren()) do
+        if v:FindFirstChild("HumanoidRootPart") and v.Health.Value > 0 then
+            local dist = (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude 
+                if dist < closestDist then
+                    closestDist = dist
+                    MobBow = v
+                end
+            end
+        end
+        return MobBow
+    end
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------    
+
+Tab2:AddToggle({
+    Name = "Bow Save HP",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        if Mon then
+            spawn(function()
+                while Mon do
+                    local MobBow = MonsterZK50()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Bow
+                        local swordScript = bow:FindFirstChild("SwordScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Shoot:FireServer(targetPos, 21)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---No Save Hp Gigy
+Tab2:AddToggle({
+    Name = "Bow No Save Hp",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowTT = value
+        if Mon then
+
+            spawn(function()
+                while Mon do
+                    local MobBow = MonsterZK50()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Bow
+                        local swordScript = bow:FindFirstChild("SwordScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Shoot:FireServer(targetPos, 21)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while BowTT do
+                local MobBow = MonsterZK50()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,0,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab2:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab2:AddSection({
+	Name = "Zaphkiel Farm All Lv.50"
+})
+local Section = Tab2:AddSection({
+	Name = "Guide to use guns from World Boss 2 requires"
+})
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+---Save Hp All Mob
+local MonZK50 = {"Lahmu","MysticIllusionist","DesertSnake","Enkidu","Gilgamesh"}
+
+local MonZK = true
+local ZKTT = true
+
+local function MonsterZK50()
+    local closestDist = math.huge
+    local MobZK = nil
+    for i,v in pairs(game.workspace.Mobs:GetChildren()) do
+        if v:FindFirstChild("HumanoidRootPart") and v.Health.Value > 0 then
+            local dist = (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude 
+                if dist < closestDist then
+                    closestDist = dist
+                    MobZK  = v
+                end
+            end
+        end
+        return MobZK 
+    end
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Tab2:AddToggle({
+    Name = "Zaphkiel No TP",
+    Default = false,
+    Callback = function(value)
+        MonZK = value
+        ZKTT = value
+        if MonZK then
+
+            spawn(function()
+                while MonZK do
+                    local MobZK = MonsterZK50()
+                    if MobZK then
+                        local zaphkiel = game.Players.LocalPlayer.Character.Zaphkiel
+                        local ServerScript = zaphkiel:FindFirstChild("ServerScript")
+                        if ServerScript then
+                            local targetPos = MobZK.HumanoidRootPart.Position 
+                            ServerScript.Create:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+---No Save Hp All Mob
+
+Tab2:AddToggle({
+    Name = "Zaphkiel TP",
+    Default = false,
+    Callback = function(value)
+        MonZK = value
+        ZKTT = value
+        if MonZK then
+
+            spawn(function()
+                while MonZK do
+                    local MobZK = MonsterZK50()
+                    if MobZK then
+                        local zaphkiel = game.Players.LocalPlayer.Character.Zaphkiel
+                        local ServerScript = zaphkiel:FindFirstChild("ServerScript")
+                        if ServerScript then
+                            local targetPos = MobZK.HumanoidRootPart.Position 
+                            ServerScript.Create:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+            spawn(function()
+                while ZKTT do
+                    local MobZK = MonsterZK50()
+                    if MobZK then
+                        TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobZK.HumanoidRootPart.CFrame * CFrame.new(0,0,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+--
+---
+----
+-----
+------
+-------
+--------
+-------------------------------------------------  End Raid Lv.50 -----------------------------------------------------------
+
+
+
+-------------------------------------------------  Star Rais Lv.60-------------------------------------------------
+--------
+------
+-----
+----
+---
+--
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab3:AddSection({
+	Name = "Bow Farm All Lv.60"
+})
+local Section = Tab3:AddSection({
+	Name = "If using Save HP, open infJume"
+})
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---Save HP 
+local MonBow60 = {"MarineBoat","MarineBoat1","MarineGun","MarineBazooka","MarineSword","Cannon1","IceAdmiral","MagmaAdmiral","LightAdmiral","Blackbeard"}
+
+local Mon = true
+local BowTT = true
+
+local function MonsterBow60()
+    local closestDist = math.huge
+    local MobBow = nil
+    for i,v in pairs(game.workspace.Mobs:GetChildren()) do
+        if v:FindFirstChild("HumanoidRootPart") and v.Health.Value > 0 then
+            local dist = (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude 
+                if dist < closestDist then
+                    closestDist = dist
+                    MobBow = v
+                end
+            end
+        end
+        return MobBow
+    end
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------    
+
+Tab3:AddToggle({
+    Name = "Bow Save HP",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        if Mon then
+            spawn(function()
+                while Mon do
+                    local MobBow = MonsterBow60()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Bow
+                        local swordScript = bow:FindFirstChild("SwordScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Shoot:FireServer(targetPos, 21)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---No Save Hp Gigy
+Tab3:AddToggle({
+    Name = "Bow No Save Hp",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowTT = value
+        if Mon then
+
+            spawn(function()
+                while Mon do
+                    local MobBow = MonsterBow60()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Bow
+                        local swordScript = bow:FindFirstChild("SwordScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Shoot:FireServer(targetPos, 21)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while BowTT do
+                local MobBow = MonsterBow60()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,0,6)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab3:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab3:AddSection({
+	Name = "Zaphkiel Farm All Lv.60"
+})
+local Section = Tab3:AddSection({
+	Name = "Guide to use guns from World Boss 2 requires"
+})
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+---Save Hp All Mob
+local MonZK60 = {"MarineBoat","MarineBoat1","MarineGun","MarineBazooka","MarineSword","Cannon1","IceAdmiral","MagmaAdmiral","LightAdmiral","Blackbeard"}
+
+local MonZK = true
+local ZKTT = true
+
+local function MonsterZK60()
+    local closestDist = math.huge
+    local MobZK = nil
+    for i,v in pairs(game.workspace.Mobs:GetChildren()) do
+        if v:FindFirstChild("HumanoidRootPart") and v.Health.Value > 0 then
+            local dist = (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude 
+                if dist < closestDist then
+                    closestDist = dist
+                    MobZK  = v
+                end
+            end
+        end
+        return MobZK 
+    end
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    Tab3:AddToggle({
+        Name = "Zaphkiel No TP",
+        Default = false,
+        Callback = function(value)
+            MonZK = value
+            ZKTT = value
+            if MonZK then
+
+            spawn(function()
+                while MonZK do
+                    local MobZK = MonsterZK60()
+                    if MobZK then
+                        local zaphkiel = game.Players.LocalPlayer.Character.Zaphkiel
+                        local ServerScript = zaphkiel:FindFirstChild("ServerScript")
+                        if ServerScript then
+                            local targetPos = MobZK.HumanoidRootPart.Position 
+                            ServerScript.Create:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+---No Save Hp All Mob
+
+    Tab3:AddToggle({
+        Name = "Zaphkiel TP",
+        Default = false,
+        Callback = function(value)
+            MonZK = value
+            ZKTT = value
+            if MonZK then
+
+            spawn(function()
+                while MonZK do
+                    local MobZK = MonsterZK60()
+                    if MobZK then
+                        local zaphkiel = game.Players.LocalPlayer.Character.Zaphkiel
+                        local ServerScript = zaphkiel:FindFirstChild("ServerScript")
+                        if ServerScript then
+                            local targetPos = MobZK.HumanoidRootPart.Position 
+                            ServerScript.Create:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+            spawn(function()
+                while ZKTT do
+                    local MobZK = MonsterZK60()
+                    if MobZK then
+                        TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobZK.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+--
+---
+----
+-----
+------
+-------
+--------
+-------------------------------------------------  End Raid Lv.60 -----------------------------------------------------------
+
+
+
+-------------------------------------------------  Star Rais Magic-------------------------------------------------
+--------
+------
+-----
+----
+---
+--
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "Artifac Farm All Lv.50 and Lv.60"
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---Save HP Gigy
+
+local MonM = true
+local MaTT = true
+
+local function MonsterMagic()
+    local closestDist = math.huge
+    local MobBow = nil
+    for i,v in pairs(game.workspace.Mobs:GetChildren()) do
+        if v:FindFirstChild("HumanoidRootPart") and v.Health.Value > 0 then
+            local dist = (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude 
+                if dist < closestDist then
+                    closestDist = dist
+                    MobBow = v
+                end
+            end
+        end
+        return MobBow
+    end
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab4:AddSection({
+	Name = "Wind"
+})
+
+Tab4:AddToggle({
+    Name = "Razor Wind",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.RazorWind
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,0,6)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+Tab4:AddToggle({
+    Name = "Wind Blade",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.WindBlade
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab4:AddSection({
+	Name = "Flame"
+})
+
+
+Tab4:AddToggle({
+    Name = "Fire Spin",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.FireSpin
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+Tab4:AddToggle({
+    Name = "Flame Blast",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.FlameBlast
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                        local bow = game.Players.LocalPlayer.Character.FlameBlast
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Throw:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab4:AddSection({
+	Name = "Ice"
+})
+
+Tab4:AddToggle({
+    Name = "Ice Shards",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.IceShards
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+Tab4:AddToggle({
+    Name = "El Huma",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.ElHuma
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+Tab4:AddToggle({
+    Name = "Frostbite",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Frostbite
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab4:AddSection({
+	Name = "Water"
+})
+
+Tab4:AddToggle({
+    Name = "Water Pulse",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.WaterPulse
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                        wait(0.01)
+                        local bow = game.Players.LocalPlayer.Character.WaterPulse
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Throw:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+Tab4:AddToggle({
+    Name = "Water Strike",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.WaterStrike
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab4:AddSection({
+	Name = "Light"
+})
+
+
+Tab4:AddToggle({
+    Name = "Light Beam",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.LightBeam
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.01)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+Tab4:AddToggle({
+    Name = "Light Shards",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.LightShards
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.01)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+Tab4:AddToggle({
+    Name = "Light Blast",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.LightBlast
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.01)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab4:AddSection({
+	Name = "Lighting"
+})
+
+Tab4:AddToggle({
+    Name = "Lightning Strike",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.LightningStrike
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab4:AddSection({
+	Name = "Esper"
+})
+
+Tab4:AddToggle({
+    Name = "Psychic",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Psychic
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.01)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+Tab4:AddToggle({
+    Name = "Gravity",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Gravity
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.01)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+Tab4:AddToggle({
+    Name = "Gravity Explosion",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.GravityExplosion
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.01)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+Tab4:AddToggle({
+    Name = "Hundred",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Hundred
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.01)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,0,6)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab4:AddSection({
+	Name = "Spirit"
+})
+
+Tab4:AddToggle({
+    Name = "Spirit Gun",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.SpiritGun
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Throw:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.01)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,0,6)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+Tab4:AddToggle({
+    Name = "Shotgun",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Shotgun
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.01)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,0,6)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab4:AddSection({
+	Name = "Magma"
+})
+
+Tab4:AddToggle({
+    Name = "Magma Fists",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.MagmaFists
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Start:FireServer()
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Shoot:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+            
+        spawn(function()
+            while MaTT do
+                local MobBow = MonsterMagic()
+                if MobBow then
+                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = MobBow.HumanoidRootPart.CFrame * CFrame.new(0,-25,50)}):Play()
+                        wait(1)
+                    end
+                    wait()
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--
+---
+----
+-----
+------
+-------
+--------
+-------------------------------------------------  End Raid Magic------------------------------------------------------------------------------
+
+OrionLib:Init()

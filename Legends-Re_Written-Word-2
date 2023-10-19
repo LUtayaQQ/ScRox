@@ -1,0 +1,2570 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "Legends Re:Written World 2", HidePremium = false, SaveConfig = false, ConfigFolder = "asdsahgjasdhkgjbdsa"})
+
+-------------------------------------------------  Star Players  -------------------------------------------------
+--------
+------
+-----
+----
+---
+--
+---------------------------------------------------------------------------------------------------------------------
+local Tab1 = Window:MakeTab({
+	Name = "Player",
+	Icon = "rbxassetid://12836323838",
+	PremiumOnly = false
+})
+-------------------------------------------
+local Tab2 = Window:MakeTab({
+	Name = "Farm Ore",
+	Icon = "rbxassetid://12836232943",
+	PremiumOnly = false
+})
+-------------------------------------------
+
+--------------------------------------------
+local Tab4 = Window:MakeTab({
+	Name = "Farm Boss Bow",
+	Icon = "rbxassetid://12836287616",
+	PremiumOnly = false
+})
+---------------------------------------------
+local Tab5 = Window:MakeTab({
+	Name = "Farm Magic",
+	Icon = "rbxassetid://12836287616",
+	PremiumOnly = false
+	})
+---------------------------------------------
+local Tab6 = Window:MakeTab({
+	Name = "Tp Land",
+	Icon = "rbxassetid://12864414614",
+	PremiumOnly = false
+})
+-------------------------------------------------
+local Tab7 = Window:MakeTab({
+	Name = "Other",
+	Icon = "rbxassetid://12836304245",
+	PremiumOnly = false
+})
+---------------------------------------------------------------------------------------------------------------------------------------
+
+--local TweenService
+local TweenService = game:GetService("TweenService")
+local TweenInfoClose = TweenInfo.new(0.5, Enum.EasingStyle.Linear)
+local Character = game.Players.LocalPlayer.Character
+
+
+--local Players
+local Players = game:GetService("Players")
+local player = game:GetService("Players").LocalPlayer
+local char = Players.LocalPlayer.Character
+local HumanoidRootPart = Character.HumanoidRootPart
+
+--local WSH
+local Workspace = game:GetService("Workspace")
+
+----------------------------------------------------------------------------------------------------------------------------------------
+InfJump = false
+Tab1:AddToggle({
+    Name = "InfJump",
+    Default = false,
+    Callback = function(value)
+        InfJump = value
+    end
+})
+
+local function onJumpRequest()
+    if InfJump then
+        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end
+end
+
+game:GetService("UserInputService").JumpRequest:connect(onJumpRequest)
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+
+local isTesting = game:GetService("RunService"):IsStudio()
+local originalWaterTextures
+if isTesting then
+    originalWaterTextures = nil
+else
+    originalWaterTextures = game:GetService("Workspace"):FindFirstChild("WaterTextures")
+end
+local isWaterHidden = false
+
+Tab1:AddToggle({
+    Name = "Hide Water",
+    Default = false,
+    Callback = function(value)
+        isWaterHidden = value
+
+        if isWaterHidden == true then
+            if originalWaterTextures ~= nil then
+                for _, child in ipairs(originalWaterTextures:GetChildren()) do
+                    child.Transparency = 1 -- ซ่อน part ที่อยู่ใน WaterTextures ทั้งหมด
+                end
+            end
+            
+            isWaterHidden = true
+        
+        else
+            if originalWaterTextures ~= nil then
+                for _, child in ipairs(originalWaterTextures:GetChildren()) do
+                    child.Transparency = 0 -- แสดง part ที่อยู่ใน WaterTextures ทั้งหมด
+                end
+                isWaterHidden = false
+            else
+                originalWaterTextures = Instance.new("Folder", game:GetService("Workspace"))
+                originalWaterTextures.Name = "WaterTextures"
+                isWaterHidden = false
+            end
+        end
+    end
+})
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+local Speed1 = 100
+
+Tab1:AddButton({
+    Name = "Speed 100",
+    Callback = function(value)
+        if Speed1 then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Speed1
+        end
+    end
+})
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+local Speed = 0
+Tab1:AddTextbox({
+    Name = "Speed Edit",
+    Default = "      ",
+    TextDisappear = true,
+    Callback = function(value)
+        local amount = tonumber(value)
+        if amount and amount > 0 then
+            Speed = amount
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Speed
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+local RuneArrows = true
+Tab1:AddTextbox({
+    Name = "Buy RuneArrows",
+    Default = "      ",
+    TextDisappear = true,
+    Callback = function(value)
+        local amount = tonumber(value)
+        if amount and amount > 0 and RuneArrows then
+            local ohString1 = "RuneArrows"
+            local ohString2 = "Bows"
+            local ohNumber3 = amount
+            game:GetService("ReplicatedStorage").Remotes.BuyItem:FireServer(ohString1, ohString2, ohNumber3)
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+AutoFish = false
+
+Tab1:AddToggle({
+    Name = "Auto Fish",
+    Default = false,
+        Callback = function(value)
+        AutoFish = value
+        if AutoFish then
+                while AutoFish do
+                local ohInstance1 = workspace.FishingSpawns.Fishing
+                game:GetService("Players").LocalPlayer.PlayerGui.Fish.Ado.catch:FireServer(ohInstance1)
+                wait(5)
+            end
+        end
+    end
+})
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+
+Dash = false
+
+Tab1:AddToggle({
+    Name = "Farm Speed",
+    Default = false,
+        Callback = function(value)
+        Dash = value
+        if Dash then
+                while Dash do
+                game:GetService("Players").LocalPlayer.PlayerGui.Parkour.Script.Dash:FireServer()
+                wait(0.5)
+            end
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+local SMB = true
+
+local function TPSMB(destination)
+    local HumanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+    HumanoidRootPart.Anchored = true
+    
+    local distance = (destination.Position - HumanoidRootPart.Position).Magnitude
+    local speed = 500
+    local time = distance / speed
+    
+    local TweenService = game:GetService("TweenService")
+    local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(HumanoidRootPart, tweenInfo, {CFrame = destination})
+    tween:Play()
+    HumanoidRootPart.Anchored = false
+end
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Tab1:AddButton({
+    Name = "Shop",
+    Callback = function(value)
+        if SMB then
+            TPSMB(CFrame.new(4320.8154296875, -155.29226684570312, 6378.77880859375))
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Tab1:AddButton({
+    Name = "BlackSmith",
+    Callback = function(value)
+        if SMB then
+            TPSMB(CFrame.new(211.25051879882812, 18.948881149291992, -368.9964294433594))
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Tab1:AddButton({
+    Name = "Bank",
+    Callback = function(value)
+        if SMB then
+            TPSMB(CFrame.new(4190.47802734375, -155.2935333251953, 6377.533203125))
+        end
+    end
+})
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+--
+---
+----
+-----
+------
+-------
+--------
+-------------------------------------------------  End Players  --------------------------------------------------
+
+-------------------------------------------------  Star Fram Ore  ------------------------------------------------
+--------
+------
+-----
+----
+---
+--
+-------------------------------------------------------------------------------------------------------------------------------------
+
+local PickAxe = true
+local Ore = true
+
+--local Farm Ore
+local function TPOre(destination)
+    local HumanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+    HumanoidRootPart.Anchored = true
+    
+    local distance = (destination.Position - HumanoidRootPart.Position).Magnitude
+    local speed = 1000
+    local time = distance / speed
+    
+    local TweenService = game:GetService("TweenService")
+    local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(HumanoidRootPart, tweenInfo, {CFrame = destination})
+    tween:Play()
+    HumanoidRootPart.Anchored = false
+end
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+--Bronz Ore
+Tab2:AddToggle({
+    Name = "Bronz Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(240.1018829345703, 53.02931594848633, -316.3339538574219))
+            wait(0.5)
+            
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(240.1018829345703, 53.02931594848633, -316.3339538574219))
+                        wait(1)
+                        if not Ore then break end
+                        TPOre(CFrame.new(286.9085693359375, 37.650390625, -320.1934814453125))
+                        wait(1)
+                        if not Ore then break end
+                        TPOre(CFrame.new(187.58328247070312, 19.634105682373047, -390.7674255371094))
+                        wait(1)
+                        if not Ore then break end
+                        TPOre(CFrame.new(193.07778930664062, 19.430782318115234, -339.6507873535156))
+                        wait(1)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+--- Iron Ore
+Tab2:AddToggle({
+    Name = "Iron Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(181.53350830078125, 19.735998153686523, -362.05657958984375))
+            wait(0.5)
+            
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(160.1562957763672, 19.645458221435547, -367.737548828125))
+                        wait(1)
+                        if not Ore then break end
+                        TPOre(CFrame.new(255.09307861328125, 48.793399810791016, -301.021484375))
+                        wait(1)
+                        if not Ore then break end
+                        TPOre(CFrame.new(285.98919677734375, 40.22940444946289, -347.4054870605469))
+                        wait(1)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+                
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+--- Black Ore
+Tab2:AddToggle({
+    Name = "Black Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(223.08132934570312, 136.53045654296875, -531.5103149414062))
+            wait(0.5)
+
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(200.4218292236328, 109.65225219726562, -492.6632080078125))
+                        wait(1)
+                        if not Ore then break end
+                        TPOre(CFrame.new(211.94068908691406, 96.56543731689453, -467.3862609863281))
+                        wait(1)
+                        if not Ore then break end
+                        TPOre(CFrame.new(241.6495361328125, 87.74860382080078, -476.3205871582031))
+                        wait(1)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+                
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+--- Adamant Ore
+Tab2:AddToggle({
+    Name = "Adamant Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(-330.7143249511719, 214.9051971435547, -325.5738525390625))
+            wait(0.5)
+            
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(-323.6196594238281, 215.02316284179688, -325.8515625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-359.86956787109375, 210.59722900390625, -328.3359069824219))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-330.3594665527344, 186.15567016601562, -439.197998046875))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-353.5116882324219, 139.93310546875, -427.1103210449219))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-367.4247741699219, 139.52586364746094, -356.20098876953125))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-392.8315124511719, 137.77349853515625, -348.9147644042969))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-382.199462890625, 141.27218627929688, -332.5194091796875))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-381.3611145019531, 93.83789825439453, -382.1306457519531))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-359.61029052734375, 91.9556655883789, -405.3069152832031))
+                        wait(2)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+                
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+--- White Stone
+Tab2:AddToggle({
+    Name = "White Stone",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(-69.30982208251953, 38.51305389404297, 450.5069274902344))
+            wait(0.5)
+
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(-51.26939392089844, 39.663421630859375, 425.5710144042969))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-66.40071868896484, 38.557960510253906, 469.778564453125))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-92.4893798828125, 38.788429260253906, 503.6325988769531))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-108.41912841796875, 39.03948211669922, 435.2402038574219))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-172.05116271972656, 40.20874786376953, 484.7751770019531))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-198.0983428955078, 39.03388214111328, 526.1689453125))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-280.8353271484375, 39.18865966796875, 556.41357421875))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-346.2044982910156, 39.409767150878906, 605.179931640625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-401.2690734863281, 39.195411682128906, 629.8668823242188))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-415.302734375, 39.18645477294922, 668.9577026367188))
+                        wait(2)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+                
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+--- Rune Ore
+Tab2:AddToggle({
+    Name = "Rune Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(55.129642486572266, 35.783897399902344, 828.6396484375))
+            wait(0.5)
+            
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(81.77721405029297, 36.264652252197266, 822.6876220703125))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4.722234725952148, 36.145389556884766, 818.7888793945312))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-115.99430847167969, 36.562530517578125, 900.9732666015625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-108.41912841796875, 39.03948211669922, 435.2402038574219))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-171.3794403076172, 36.269229888916016, 913.6370239257812))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-252.55679321289062, 36.51658248901367, 939.2569580078125))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-308.1146545410156, 36.3888053894043, 938.2496337890625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(-330.0320739746094, 36.216060638427734, 910.8071899414062))
+                        wait(2)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+                
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+--- Gold Ore
+Tab2:AddToggle({
+    Name = "Gold Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(3364.35009765625, -749.7156372070312, 5966.05908203125))
+            wait(0.5)
+            
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(3364.78515625, -749.7144165039062, 5970.09716796875))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(3395.778076171875, -751.8324584960938, 5947.6279296875))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(3426.228515625, -749.2742919921875, 5961.41552734375))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(3476.06591796875, -750.1771240234375, 5945.53515625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(3506.312255859375, -750.3860473632812, 5958.54541015625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(3509.4072265625, -752.0604858398438, 5980.52099609375))
+                        wait(2)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+                
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+--- Crystal Ore
+Tab2:AddToggle({
+    Name = "Crystal Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(3715.572265625, -762.5343627929688, 5414.412109375))
+            wait(0.5)
+
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(3716.40087890625, -758.3865356445312, 5398.45361328125))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(3691.34619140625, -758.3460083007812, 5415.5419921875))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(3741.0693359375, -758.5548706054688, 5410.548828125))
+                        wait(2)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+                
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+--- Stardust Ore
+Tab2:AddToggle({
+    Name = "Stardust Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(4434.9765625, -718.8471069335938, 5935.52099609375))
+            wait(0.5)
+            
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(4423.70166015625, -718.8588256835938, 5930.6494140625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4450.2255859375, -718.7822265625, 5999.75244140625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4490.3818359375, -716.229248046875, 5994.5166015625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4512.103515625, -718.8023071289062, 6067.017578125))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4577.4404296875, -718.9923095703125, 6174.88525390625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4551.10986328125, -718.2465209960938, 6199.99462890625))
+                        wait(2)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+                
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+---Galaxy Ore
+Tab2:AddToggle({
+    Name = "Galaxy Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(4434.9765625, -718.8471069335938, 5935.52099609375))
+            wait(0.5)
+
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(4451.029296875, -716.109130859375, 5928.19970703125))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4460.94921875, -716.5733642578125, 6086.16796875))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4563.67138671875, -715.7063598632812, 6104.39306640625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4605.99853515625, -716.2992553710938, 6176.51708984375))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4716.51708984375, -715.8817749023438, 6140.50927734375))
+                        wait(2)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+                
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+---Crystalight Ore
+Tab2:AddToggle({
+    Name = "Crystalight Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(4814.251953125, -778.5182495117188, 6515.0166015625))
+            wait(0.5)
+ 
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(4754.69140625, -781.9938354492188, 6515.6728515625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4731.90673828125, -777.7952270507812, 6651.7734375))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4812.9912109375, -777.02734375, 6606.39501953125))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4833.13720703125, -768.9892578125, 6451.85595703125))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(4284.8544921875, -804.1765747070312, 6406.02880859375))
+                        wait(2)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+---Mystic Ore
+Tab2:AddToggle({
+    Name = "Mystic Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(3364.35009765625, -749.7156372070312, 5966.05908203125))
+            wait(0.5)
+ 
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                        TPOre(CFrame.new(3365.473388671875, -751.5068969726562, 5942.4677734375))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(3425.7998046875, -747.6140747070312, 5939.26904296875))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(3491.812744140625, -748.9810180664062, 5983.1640625))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(3521.51513671875, -752.52783203125, 5952.04345703125))
+                        wait(2)
+                        if not Ore then break end
+                        TPOre(CFrame.new(3560.17138671875, -774.6091918945312, 5993.90478515625))
+                        wait(2)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+---Frenzy Ore
+Tab2:AddToggle({
+    Name = "Frenzy Ore",
+    Default = false,
+    Callback = function(value)
+    PickAxe = value
+    Ore = value
+        if Ore then
+            
+            TPOre(CFrame.new(4814.251953125, -778.5182495117188, 6515.0166015625))
+            wait(0.5)
+            
+                spawn(function()
+                    if Ore then 
+                        while Ore do
+                            TPOre(CFrame.new(4793.74365234375, -783.8568725585938, 6475.79638671875))
+                        wait(2)
+                        if not Ore then break end
+                        end
+                    end
+                end)
+                
+                spawn(function()
+                    while PickAxe do
+                        game:GetService("Players").LocalPlayer.Character.PickAxe.SwordScript.Activate:FireServer()
+                    wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+--
+---
+----
+-----
+------
+-------
+--------
+-------------------------------------------------  End Players  ------------------------------------------------------
+
+
+
+
+-------------------------------------------------  Star Bow Farm   ----------------------------------------
+--------
+------
+-----
+----
+---
+--
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "If you press Farm boss and it doesn't work, press Bypass."
+})
+
+--local Farm 
+local function moveToBP(destination)
+    
+    local distance = (destination.Position - HumanoidRootPart.Position).Magnitude
+    local speed = 500
+    local time = distance / speed
+    
+    local TweenService = game:GetService("TweenService")
+    local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(HumanoidRootPart, tweenInfo, {CFrame = destination})
+    tween:Play()
+    tween.Completed:wait()
+end
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local BypassGG = true
+
+Tab4:AddButton({
+    Name = "Bypass",
+    Callback = function(value)
+        if BypassGG then
+    
+            moveToBP(CFrame.new(-4521.52001953125, 20.19076919555664, 1641.5771484375))
+            wait(1)
+            moveToBP(CFrame.new(-5994.1201171875, 1852.655029296875, 4024.04638671875))
+            wait(1)
+            moveToBP(CFrame.new(-1946.349853515625, 263.85894775390625, 5111.33935546875))
+            wait(1)
+            moveToBP(CFrame.new(117.33790588378906, 935.1010131835938, 3119.712158203125))
+            wait(1)
+            moveToBP(CFrame.new(8.344050407409668, 19.95615005493164, 8244.5107421875))
+            wait(1)
+            moveToBP(CFrame.new(4253.72314453125, -155.29238891601562, 6427.59765625))
+            wait(1)
+            moveToBP(CFrame.new(39.280555725097656, 19.469913482666016, -248.6748046875))
+        end
+    end
+})
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab4:AddSection({
+	Name = "AFK Bow Farm"
+})
+
+local function moveTo(destination)
+
+    local distance = (destination.Position - HumanoidRootPart.Position).Magnitude
+    local speed = 500
+    local time = distance / speed
+    
+    local TweenService = game:GetService("TweenService")
+    local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(HumanoidRootPart, tweenInfo, {CFrame = destination})
+    tween:Play()
+    tween.Completed:wait()
+end
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local BowAttack = true
+local Mon = true
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---Tanzaknite Level:90
+local MobName = "Tanzaknite"
+
+Tab4:AddToggle({
+    Name = "Tanzaknite Level:90",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+            
+            moveTo(CFrame.new(5091.7236328125, 130.20970153808594, 5569.03369140625))
+            wait(1)
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 500 then
+
+                    spawn(function()
+                            while Mon and v.Humanoid.Health > 0 do
+                                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,0,30)}):Play()
+                                wait(0.5)
+                            end
+                        end)
+                            
+                            spawn(function()
+                                while Mon and v.Humanoid and v.Humanoid.Health > 0 do
+                                    char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.Position, 21)
+                                    wait(0.3)
+                                    end
+                                end)
+
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---Ronin Level:110 : Level:120
+local MobName = "Ronin"
+
+Tab4:AddToggle({
+    Name = "Ronin Level:110",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+            
+            moveTo(CFrame.new(514.5203857421875, 19.46990966796875, -383.6240234375))
+            wait(1)
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 500 then
+
+                    spawn(function()
+                            while Mon and v.Humanoid.Health > 0 do
+                                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,0,30)}):Play()
+                                wait(0.5)
+                            end
+                        end)
+                            
+                            spawn(function()
+                                while Mon and v.Humanoid and v.Humanoid.Health > 0 do
+                                    char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.Position, 21)
+                                    wait(0.3)
+                                    end
+                                end)
+
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---Pharaoh Level:125
+local MobName = "Pharaoh"
+
+Tab4:AddToggle({
+    Name = "Pharaoh Level:125",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+            
+            moveTo(CFrame.new(-5994.7265625, 1852.7735595703125, 4024.900146484375))
+            wait(1)
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 500 then
+
+                    spawn(function()
+                            while Mon and v.Humanoid.Health > 0 do
+                                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,0,30)}):Play()
+                                wait(0.5)
+                            end
+                        end)
+                            
+                            spawn(function()
+                                while Mon and v.Humanoid and v.Humanoid.Health > 0 do
+                                    char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.Position, 21)
+                                    wait(0.3)
+                                    end
+                                end)
+
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---Demon Chest Level:200
+local MobName = "MimicChest"
+
+Tab4:AddToggle({
+    Name = "Demon Chest Level:200",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+            
+            moveTo(CFrame.new(694.2025756835938, 145.73423767089844, 532.7348022460938))
+            wait(1)
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 5 then
+
+                    spawn(function()
+                            while Mon and v.Humanoid.Health > 0 do
+                                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,0,40)}):Play()
+                                wait(0.5)
+                            end
+                        end)
+                            
+                            spawn(function()
+                                while Mon and v.Humanoid and v.Humanoid.Health > 0 do
+                                    char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.Position, 21)
+                                    wait(0.3)
+                                    end
+                                end)
+
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---Sea King Level:200
+local MobName = "SeaKing"
+
+Tab4:AddToggle({
+    Name = "Sea King Level:200",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+            
+            moveTo(CFrame.new(863.7012329101562, 98.45106506347656, 3254.254150390625))
+            wait(1)
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 300 then
+
+                    spawn(function()
+                            while Mon and v.Humanoid.Health > 0 do
+                                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,0,50)}):Play()
+                                wait(0.5)
+                            end
+                        end)
+                            
+                            spawn(function()
+                                while Mon and v.Humanoid and v.Humanoid.Health > 0 do
+                                    char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.Position, 21)
+                                    wait(0.3)
+                                    end
+                                end)
+
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---Abyss Knight Level:370
+local MobName = "AbyssKnight"
+
+Tab4:AddToggle({
+    Name = "Abyss Knight Level:370",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+            
+            local air = Instance.new("Part", workspace)
+            air.Size = Vector3.new(5, 0.5, 5)
+            air.CFrame = CFrame.new(4483.31982421875, -684.4680786132812, 6372.4453125)
+            air.Transparency = 0
+            air.Anchored = true
+            air.Name = "Airwalk"
+            
+            moveTo(CFrame.new(4483.171875, -681.2482299804688, 6372.15478515625))
+            wait(1)
+            moveTo(CFrame.new(4483.171875, -681.2482299804688, 6372.15478515625))
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 5000 then
+
+                        spawn(function()
+                            while BowAttack and v.Humanoid and v.Humanoid.Health > 0 do
+                                char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.CFrame.Position, 21)
+                                wait(0.3)
+                            end
+                        end)
+                        
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                        moveTo(CFrame.new(4541.29052734375, -718.9581298828125, 6137.08740234375))
+                        wait(4)
+                        moveTo(CFrame.new(4483.171875, -681.2482299804688, 6372.15478515625))
+                        wait(2)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---Hiraglacir Level:380
+local MobName = "Hiraglacir"
+
+Tab4:AddToggle({
+    Name = "Hiraglacir Level:380",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+
+            moveTo(CFrame.new(-42.54088592529297, 29.167022705078125, 8418.783203125))
+            wait(1)
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 300 then
+
+                    spawn(function()
+                            while Mon and v.Humanoid.Health > 0 do
+                                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,0,50)}):Play()
+                                wait(0.5)
+                            end
+                        end)
+                            
+                            spawn(function()
+                                while Mon and v.Humanoid and v.Humanoid.Health > 0 do
+                                    char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.Position, 21)
+                                    wait(0.3)
+                                    end
+                                end)
+
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---Lightning God Level:400
+local MobName = "LightningGod"
+
+Tab4:AddToggle({
+    Name = "Lightning God Level:400",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+            
+            local air = Instance.new("Part", workspace)
+            air.Size = Vector3.new(5, 0.5, 5)
+            air.CFrame = CFrame.new(-6189.068359375, 1864.80615234375, 4068.8701171875)
+            air.Transparency = 0
+            air.Anchored = true
+            air.Name = "Airwalk"
+            
+            moveTo(CFrame.new(-6189.068359375, 1867.80615234375, 4068.8701171875))
+            wait(1)
+            moveTo(CFrame.new(-6189.068359375, 1867.80615234375, 4068.8701171875))
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 5000 then
+
+                        spawn(function()
+                            while BowAttack and v.Humanoid and v.Humanoid.Health > 0 do
+                                char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.CFrame.Position, 21)
+                                wait(0.3)
+                            end
+                        end)
+                        
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                        moveTo(CFrame.new(-6519.38134765625, 1640.769775390625, 4021.671142578125))
+                        wait(4)
+                        moveTo(CFrame.new(-6189.068359375, 1867.80615234375, 4068.8701171875))
+                        wait(2)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---Chain User Level:445
+local MobName = "Chain User"
+
+Tab4:AddToggle({
+    Name = "Chain User Level:445",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+            
+            local air = Instance.new("Part", workspace)
+            air.Size = Vector3.new(5, 0.5, 5)
+            air.CFrame = CFrame.new(4726.03466796875, 335.33660888671875, 6837.7578125)
+            air.Transparency = 0
+            air.Anchored = true
+            air.Name = "Airwalk"
+            
+            moveTo(CFrame.new(4726.03466796875, 338.33660888671875, 6837.7578125))
+            wait(1)
+            moveTo(CFrame.new(4726.03466796875, 338.33660888671875, 6837.7578125))
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 5000 then
+
+                        spawn(function()
+                            while BowAttack and v.Humanoid and v.Humanoid.Health > 0 do
+                                char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.CFrame.Position, 21)
+                                wait(0.3)
+                            end
+                        end)
+                        
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                        moveTo(CFrame.new(4869.6298828125, 33.57052230834961, 7219.00439453125))
+                        wait(4)
+                        moveTo(CFrame.new(4726.03466796875, 338.33660888671875, 6837.7578125))
+                        wait(2)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+---Law Level:450
+local MobName = "Law"
+
+Tab4:AddToggle({
+    Name = "Law Level:450",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+            
+            local air = Instance.new("Part", workspace)
+            air.Size = Vector3.new(5, 0.5, 5)
+            air.CFrame = CFrame.new(1088.350830078125, 332.9471435546875, -788.2487182617188)
+            air.Transparency = 0
+            air.Anchored = true
+            air.Name = "Airwalk"
+            
+            moveTo(CFrame.new(1088.350830078125, 335.9471435546875, -788.2487182617188))
+            wait(1)
+            moveTo(CFrame.new(1088.350830078125, 335.9471435546875, -788.2487182617188))
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 5000 then
+
+                        spawn(function()
+                            while BowAttack and v.Humanoid and v.Humanoid.Health > 0 do
+                                char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.CFrame.Position, 21)
+                                wait(0.1)
+                            end
+                        end)
+                        
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                        moveTo(CFrame.new(834.67138671875, 19.46990966796875, -861.7884521484375))
+                        wait(4)
+                        moveTo(CFrame.new(1088.350830078125, 335.9471435546875, -788.2487182617188))
+                        wait(2)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+---Rotted Knight Level:470
+local MobName = "RottedKnight"
+
+Tab4:AddToggle({
+    Name = "Rotted Knight Level:470",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+            moveTo(CFrame.new(-4468.2265625, 72.93830871582031, 1339.0042724609375))
+            wait(1)
+            moveTo(CFrame.new(-4468.2265625, 72.93830871582031, 1339.0042724609375))
+        end
+        
+        if Mon then
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 500 then
+
+                    spawn(function()
+                            while Mon and v.Humanoid.Health > 0 do
+                                TweenService:Create(player.Character.HumanoidRootPart, TweenInfoClose, {CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,0,30)}):Play()
+                                wait(0.5)
+                            end
+                        end)
+                            
+                            spawn(function()
+                                while Mon and v.Humanoid and v.Humanoid.Health > 0 do
+                                    char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.Position, 21)
+                                    wait(0.3)
+                                end
+                            end)
+                            
+
+                            repeat wait() until v.Humanoid.Health <= 0
+                            moveTo(v.HumanoidRootPart.CFrame)
+                            wait(4)
+                            moveTo(CFrame.new(-4468.2265625, 72.93830871582031, 1339.0042724609375))
+                            wait(2)
+                        end
+                    end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+---Master Swordsman Level:500
+local MobName = "MasterSwordsman"
+
+Tab4:AddToggle({
+    Name = "Master Swordsman Level:500",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+
+            local air = Instance.new("Part", workspace)
+            air.Size = Vector3.new(5, 0.5, 5)
+            air.CFrame = CFrame.new(-2191.16796875, 365.0719909667969, 4462.98828125)
+            air.Transparency = 0
+            air.Anchored = true
+            air.Name = "Airwalk"
+            
+            moveTo(CFrame.new(-2191.16796875, 368.0719909667969, 4462.98828125))
+            wait(1)
+            
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 5000 then
+
+                        spawn(function()
+                            while BowAttack and v.Humanoid and v.Humanoid.Health > 0 do
+                                char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.CFrame.Position, 21)
+                                wait(0.3)
+                            end
+                        end)
+                        
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                        moveTo(CFrame.new(-1961.22314453125, 169.16986083984375, 4805.2177734375))
+                        wait(4)
+                        moveTo(CFrame.new(-2191.16796875, 368.0719909667969, 4462.98828125))
+                        wait(2)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+---Nightmare Level:500
+local MobName = "Nightmare"
+
+Tab4:AddToggle({
+    Name = "Nightmare Level:500",
+    Default = false,
+    Callback = function(value)
+        Mon = value
+        BowAttack = value
+        if Mon then
+
+            local air = Instance.new("Part", workspace)
+            air.Size = Vector3.new(5, 0.5, 5)
+            air.CFrame = CFrame.new(515.275146484375, 1054.561767578125, 2525.274658203125)
+            air.Transparency = 0
+            air.Anchored = true
+            air.Name = "Airwalk"
+            
+            moveTo(CFrame.new(515.275146484375, 1057.561767578125, 2525.274658203125))
+            wait(1)
+            moveTo(CFrame.new(515.275146484375, 1057.561767578125, 2525.274658203125))
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 5000 then
+
+                        spawn(function()
+                            while BowAttack and v.Humanoid and v.Humanoid.Health > 0 do
+                                char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.CFrame.Position, 21)
+                                wait(0.3)
+                            end
+                        end)
+                        
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                        moveTo(CFrame.new(256.6656799316406, 893.0773315429688, 2806.488525390625))
+                        wait(4)
+                        moveTo(CFrame.new(515.275146484375, 1057.561767578125, 2525.274658203125))
+                        wait(2)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+---Lightning God Level:400
+local MobName = "Pirate Hunter"
+
+Tab4:AddToggle({
+    Name = "Pirate Hunter Level:555",  
+    Default = false,
+    Callback = function(value) 
+        Mon = value
+        BowAttack = value
+        if Mon then
+            
+            local air = Instance.new("Part", workspace)
+            air.Size = Vector3.new(5, 0.5, 5)
+            air.CFrame = CFrame.new(-6214.0126953125, 1898.8837890625, 4040.933349609375)
+            air.Transparency = 0
+            air.Anchored = true
+            air.Name = "Airwalk"
+            
+            moveTo(CFrame.new(-6213.615234375, 1902.1033935546875, 4040.85302734375))
+            wait(1)
+            moveTo(CFrame.new(-6213.615234375, 1902.1033935546875, 4040.85302734375))
+
+            while BowAttack do
+                for i, v in ipairs(Workspace.Mobs:GetChildren()) do
+                    if string.match(v.Name, MobName) and v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Position.Z - char.HumanoidRootPart.Position.Z <= 5000 then
+
+                        spawn(function()
+                            while BowAttack and v.Humanoid and v.Humanoid.Health > 0 do
+                                char.Bow.SwordScript.Shoot:FireServer(v.HumanoidRootPart.CFrame.Position, 21)
+                                wait(0.3)
+                            end
+                        end)
+                        
+                        repeat wait() until v.Humanoid.Health <= 0
+                        moveTo(v.HumanoidRootPart.CFrame)
+                        wait(4)
+                        moveTo(CFrame.new(-6527.1220703125, 1640.77734375, 4023.134033203125))
+                        wait(4)
+                        moveTo(CFrame.new(-6213.615234375, 1902.1033935546875, 4040.85302734375))
+                        wait(2)
+                    end
+                end
+                wait(0.5)
+            end
+        end
+    end
+})
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+--
+---
+----
+-----
+------
+-------
+--------
+-------------------------------------------------  End Bow farm  -----------------------------------------------------------
+
+
+local Section = Tab5:AddSection({
+	Name = "AFK Megic Farm"
+})
+
+local MonM = true
+local MaTT = true
+
+local function MonsterMagic()
+    local closestDist = math.huge
+    local MobBow = nil
+    for i,v in pairs(game.workspace.Mobs:GetChildren()) do
+        if v:FindFirstChild("HumanoidRootPart") and v.Health.Value > 0 then
+            local dist = (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude 
+                if dist < closestDist then
+                    closestDist = dist
+                    MobBow = v
+                end
+            end
+        end
+        return MobBow
+    end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab5:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab5:AddSection({
+	Name = "Wind"
+})
+
+Tab5:AddToggle({
+    Name = "Wind Blade",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.WindBlade
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab5:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab5:AddSection({
+	Name = "Flame"
+})
+
+Tab5:AddToggle({
+    Name = "Fire Shard",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.FireShard
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                        wait(0.1)
+                        local bow = game.Players.LocalPlayer.Character.FireShard
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Throw:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "Flame Explosion",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.FlameExplosion
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "Fire Spin",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.FireSpin
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "Flame Blast",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.FlameBlast
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                        wait(0.01)
+                        local bow = game.Players.LocalPlayer.Character.FlameBlast
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Throw:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab5:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab5:AddSection({
+	Name = "Ice"
+})
+
+Tab5:AddToggle({
+    Name = "Ice Shards",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.IceShards
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "El Huma",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.ElHuma
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "Frostbite",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Frostbite
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab5:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab5:AddSection({
+	Name = "Water"
+})
+
+Tab5:AddToggle({
+    Name = "Water Pulse",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.WaterPulse
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                        wait(0.01)
+                        local bow = game.Players.LocalPlayer.Character.WaterPulse
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Throw:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "Water Pillars",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.WaterPillars
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "Water Strike",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.WaterStrike
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab5:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab5:AddSection({
+	Name = "Light"
+})
+
+Tab5:AddToggle({
+    Name = "Light Beam",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.LightBeam
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "Light Shards",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.LightShards
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "Light Blast",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.LightBlast
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab5:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab5:AddSection({
+	Name = "Lighting"
+})
+
+Tab5:AddToggle({
+    Name = "Lightning Strike",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.LightningStrike
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab5:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab5:AddSection({
+	Name = "Esper"
+})
+
+Tab5:AddToggle({
+    Name = "Psychic",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Psychic
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "Gravity",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Gravity
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "Gravity Explosion",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.GravityExplosion
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+Tab5:AddToggle({
+    Name = "Hundred",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.Hundred
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Charge:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+local Section = Tab5:AddSection({
+	Name = "----------------------------------------------------------------------------------------------------------------------------------------------"
+})
+local Section = Tab5:AddSection({
+	Name = "Magma"
+})
+
+Tab5:AddToggle({
+    Name = "Magma Fists",
+    Default = false,
+    Callback = function(value)
+        MonM = value
+        MaTT = value
+        if MonM then
+
+            spawn(function()
+                while MonM do
+                    local MobBow = MonsterMagic()
+                    if MobBow then
+                        local bow = game.Players.LocalPlayer.Character.MagmaFists
+                        local swordScript = bow:FindFirstChild("ServerScript")
+                        if swordScript then
+                            local targetPos = MobBow.HumanoidRootPart.Position 
+                            swordScript.Shoot:FireServer(targetPos)
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+-------------------------------------------------  Star Tp Land  -----------------------------------------------------------
+--------
+------
+-----
+----
+---
+--
+----------------------------------------------------------------------------------------------------------------------------------------
+
+local LandTP = true
+
+local function TpLand(destination)
+    local HumanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+    HumanoidRootPart.Anchored = true
+    
+    local distance = (destination.Position - HumanoidRootPart.Position).Magnitude
+    local speed = 500
+    local time = distance / speed
+    
+    local TweenService = game:GetService("TweenService")
+    local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(HumanoidRootPart, tweenInfo, {CFrame = destination})
+    tween:Play()
+    HumanoidRootPart.Anchored = false
+end
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Tab6:AddButton({
+    Name = "Samurai City",
+    Callback = function(value)
+        if LandTP then
+        TpLand(CFrame.new(62.65230941772461, 19.46990966796875, -250.31268310546875))
+    end
+end
+}) 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Tab6:AddButton({
+    Name = "Sand Sky",
+    Callback = function(value)
+        if LandTP then
+        TpLand(CFrame.new(467.154296875, 901.2927856445312, 2513.03515625))
+    end
+end
+}) 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Tab6:AddButton({
+    Name = "Sky Land",
+    Callback = function(value)
+        if LandTP then
+        TpLand(CFrame.new(-5994.7265625, 1852.7735595703125, 4024.900146484375))
+    end
+end
+}) 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Tab6:AddButton({
+    Name = "Colosseum",
+    Callback = function(value)
+        if LandTP then
+        TpLand(CFrame.new(-1946.349853515625, 263.85894775390625, 5111.33935546875))
+    end
+end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Tab6:AddButton({
+    Name = "Crazy Island",
+    Callback = function(value)
+        if LandTP then
+        TpLand(CFrame.new(-4521.52001953125, 20.193286895751953, 1641.5771484375))
+    end
+end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Tab6:AddButton({
+    Name = "Ice Island",
+    Callback = function(value)
+        if LandTP then
+        TpLand(CFrame.new(8.041343688964844, 19.95615005493164, 8244.5341796875))
+    end
+end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Tab6:AddButton({
+    Name = "Flower Village",
+    Callback = function(value)
+        if LandTP then
+        TpLand(CFrame.new(4253.72314453125, -155.29238891601562, 6427.59765625))
+    end
+end
+})
+----
+-----
+------
+-------
+--------
+-------------------------------------------------  End Tp Land  ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+-------------------------------------------------  Star Oter  ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------
+------
+-----
+----
+---
+--
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+AntiAFK = false
+
+Tab7:AddToggle({
+    Name = "Anti AFK",
+    Default = false,
+        Callback = function(value)
+        AntiAFK = value
+        if AntiAFK then
+            wait(3)
+            local VirtualUser=game:service'VirtualUser'
+            game:service('Players').LocalPlayer.Idled:connect(function()
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton2(Vector2.new())
+            end)
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FullBright = false
+
+Tab7:AddToggle({
+    Name = "FullBright",
+    Default = false,
+    Callback = function(value)
+        FullBright = value
+        
+        _G.FullBrightEnabled = FullBright
+        
+    if not _G.FullBrightExecuted then
+
+	_G.FullBrightEnabled = false
+
+	_G.NormalLightingSettings = {
+		Brightness = game:GetService("Lighting").Brightness,
+		ClockTime = game:GetService("Lighting").ClockTime,
+	}
+
+	game:GetService("Lighting"):GetPropertyChangedSignal("Brightness"):Connect(function()
+		if game:GetService("Lighting").Brightness ~= 1 and game:GetService("Lighting").Brightness ~= _G.NormalLightingSettings.Brightness then
+			_G.NormalLightingSettings.Brightness = game:GetService("Lighting").Brightness
+			if not _G.FullBrightEnabled then
+				repeat
+					wait()
+				until _G.FullBrightEnabled
+			end
+			game:GetService("Lighting").Brightness = 1
+		end
+	end)
+
+	game:GetService("Lighting"):GetPropertyChangedSignal("ClockTime"):Connect(function()
+		if game:GetService("Lighting").ClockTime ~= 12 and game:GetService("Lighting").ClockTime ~= _G.NormalLightingSettings.ClockTime then
+			_G.NormalLightingSettings.ClockTime = game:GetService("Lighting").ClockTime
+			if not _G.FullBrightEnabled then
+				repeat
+					wait()
+				until _G.FullBrightEnabled
+			end
+			game:GetService("Lighting").ClockTime = 12
+		end
+	end)
+
+
+	game:GetService("Lighting").Brightness = 1
+	game:GetService("Lighting").ClockTime = 12
+
+	local LatestValue = true
+	spawn(function()
+		repeat
+			wait()
+		until _G.FullBrightEnabled
+		while wait() do
+			if _G.FullBrightEnabled ~= LatestValue then
+				if not _G.FullBrightEnabled then
+					game:GetService("Lighting").Brightness = _G.NormalLightingSettings.Brightness
+					game:GetService("Lighting").ClockTime = _G.NormalLightingSettings.ClockTime
+
+				else
+					game:GetService("Lighting").Brightness = 1
+					game:GetService("Lighting").ClockTime = 12
+				end
+				LatestValue = not LatestValue
+			end
+		end
+	end)
+end
+_G.FullBrightExecuted = true
+
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+---Off Shake Camera
+local OffShake = true
+Tab7:AddToggle({
+    Name = "Off Shake Camera",
+    Default = false,
+    Callback = function(value)
+        if OffShake then
+            game:GetService("UserInputService").WindowFocused:connect(function()
+            end)
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Rejoin = true
+Tab7:AddButton({
+    Name = "Rejoin",
+    Callback = function(value)
+        if Rejoin then
+            local tpservice = game:GetService("TeleportService")
+            local plr = game.Players.LocalPlayer
+            tpservice:Teleport(game.PlaceId, plr)
+        end
+    end
+})
+
+------------------------------------------------------------------------------------------------------------------
+--
+---
+----
+-----
+------
+-------
+--------
+-------------------------------------------------  End Oter  ----------------------------------------------------
+OrionLib:Init()
